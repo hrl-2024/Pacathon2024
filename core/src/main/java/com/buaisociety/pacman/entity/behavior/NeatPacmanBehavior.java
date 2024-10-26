@@ -9,6 +9,7 @@ import com.cjcrafter.neat.Client;
 import com.buaisociety.pacman.entity.Direction;
 import com.buaisociety.pacman.entity.Entity;
 import com.buaisociety.pacman.entity.PacmanEntity;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,6 +88,18 @@ public class NeatPacmanBehavior implements Behavior {
         int currentScore = pacman.getMaze().getLevelManager().getScore();
         int pelletsLeft = pacman.getMaze().getPelletsRemaining();
 
+        // Check if Pacman should eat a PowerPellet
+        boolean shouldEatPowerPellet = (distanceToGhostForward < 5 || distanceToGhostLeft < 5 || distanceToGhostRight < 5 || distanceToGhostBehind < 5);
+        // Get closest power pellet direction and distance
+        Pair<Integer, Direction> closestPowerPellet = pacman.getDistanceAndDirectionToNearestPelletAndGhost();
+        int distanceToClosestPowerPellet = closestPowerPellet.getFirst();
+        Direction directionToClosestPowerPellet = closestPowerPellet.getSecond();
+        boolean closestPowerPelletIsForward = directionToClosestPowerPellet == forward;
+        boolean closestPowerPelletIsLeft = directionToClosestPowerPellet == left;
+        boolean closestPowerPelletIsRight = directionToClosestPowerPellet == right;
+        boolean closestPowerPelletIsBehind = directionToClosestPowerPellet == behind;
+        boolean isInSuperMode = pacman.isInSuperMode();
+
         float[] outputs = client.getCalculator().calculate(new float[]{
             canMoveForward ? 1f : 0f,
             canMoveLeft ? 1f : 0f,
@@ -102,6 +115,13 @@ public class NeatPacmanBehavior implements Behavior {
             distanceToGhostBehind,
             currentScore,
             pelletsLeft,
+            shouldEatPowerPellet ? 1f : 0f,
+            distanceToClosestPowerPellet,
+            closestPowerPelletIsForward ? 1f : 0f,
+            closestPowerPelletIsLeft ? 1f : 0f,
+            closestPowerPelletIsRight ? 1f : 0f,
+            closestPowerPelletIsBehind ? 1f : 0f,
+            isInSuperMode ? 1f : 0f,
         }).join();
 
         int index = 0;

@@ -7,6 +7,7 @@ import com.buaisociety.pacman.entity.behavior.AggressiveChaseBehavior;
 import com.buaisociety.pacman.entity.behavior.Behavior;
 import com.buaisociety.pacman.maze.*;
 import com.buaisociety.pacman.sprite.GrayscaleSpriteSheet;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
@@ -96,6 +97,15 @@ public class PacmanEntity extends Entity {
                 return BASE_SPEED * 0.80;
             }
         }
+    }
+
+    public Pair<Integer, Direction> getDistanceAndDirectionToNearestPelletAndGhost() {
+        Tile startTile = maze.getTile(getTilePosition());
+        return pathFinder.getDistanceAndDirectionToNearestPowerPellet(startTile);
+    }
+
+    public boolean isInSuperMode() {
+        return maze.getFrightenedTimer() > 0;
     }
 
     @Override
