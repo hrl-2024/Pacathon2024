@@ -84,8 +84,14 @@ public class NeatPacmanBehavior implements Behavior {
         int distanceToGhostRight = pacman.getDistanceToNearestGhost(right);
         int distanceToGhostBehind = pacman.getDistanceToNearestGhost(behind);
 
+        // One hot encoding for the direction of the closest power pellet
+        int minDistance = Math.min(distanceToNearestPelletForward, Math.min(distanceToNearestPelletLeft, Math.min(distanceToNearestPelletRight, distanceToNearestPelletBehind)));
+        boolean closestPalletIsForward = distanceToNearestPelletForward == minDistance;
+        boolean closestPalletIsLeft = distanceToNearestPelletLeft == minDistance;
+        boolean closestPalletIsRight = distanceToNearestPelletRight == minDistance;
+        boolean closestPalletIsBehind = distanceToNearestPelletBehind == minDistance;
+
         // Get the current score and number of pellets left
-        int currentScore = pacman.getMaze().getLevelManager().getScore();
         int pelletsLeft = pacman.getMaze().getPelletsRemaining();
 
         // Check if Pacman should eat a PowerPellet
@@ -105,24 +111,28 @@ public class NeatPacmanBehavior implements Behavior {
             canMoveLeft ? 1f : 0f,
             canMoveRight ? 1f : 0f,
             canMoveBehind ? 1f : 0f,
-            distanceToNearestPelletForward,
-            distanceToNearestPelletLeft,
-            distanceToNearestPelletRight,
-            distanceToNearestPelletBehind,
-            distanceToGhostForward,
-            distanceToGhostLeft,
-            distanceToGhostRight,
-            distanceToGhostBehind,
-            currentScore,
-            pelletsLeft,
-            shouldEatPowerPellet ? 1f : 0f,
-            distanceToClosestPowerPellet,
-            closestPowerPelletIsForward ? 1f : 0f,
-            closestPowerPelletIsLeft ? 1f : 0f,
-            closestPowerPelletIsRight ? 1f : 0f,
-            closestPowerPelletIsBehind ? 1f : 0f,
-            isInSuperMode ? 1f : 0f,
+            closestPalletIsForward ? 1f : 0f,
+            closestPalletIsLeft ? 1f : 0f,
+            closestPalletIsRight ? 1f : 0f,
+            closestPalletIsBehind ? 1f : 0f,
         }).join();
+
+        //            closestPalletIsForward ? 1f : 0f,
+        //            closestPalletIsLeft ? 1f : 0f,
+        //            closestPalletIsRight ? 1f : 0f,
+        //            closestPalletIsBehind ? 1f : 0f,
+
+//        distanceToGhostForward,
+//            distanceToGhostLeft,
+//            distanceToGhostRight,
+//            distanceToGhostBehind,
+//        shouldEatPowerPellet ? 1f : 0f,
+//            distanceToClosestPowerPellet,
+//            closestPowerPelletIsForward ? 1f : 0f,
+//            closestPowerPelletIsLeft ? 1f : 0f,
+//            closestPowerPelletIsRight ? 1f : 0f,
+//            closestPowerPelletIsBehind ? 1f : 0f,
+//            isInSuperMode ? 1f : 0f,
 
         int index = 0;
         float max = outputs[0];
