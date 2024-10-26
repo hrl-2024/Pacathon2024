@@ -21,6 +21,9 @@ public class NeatPacmanBehavior implements Behavior {
     // specific pools of points instead of subtracting from all.
     private int scoreModifier = 0;
 
+    private int numberUpdatesSincelastscone = 0;
+    private int lastScore = 0;
+
     public NeatPacmanBehavior(@NotNull Client client) {
         this.client = client;
     }
@@ -41,6 +44,19 @@ public class NeatPacmanBehavior implements Behavior {
         // SPECIAL TRAINING CONDITIONS
         // TODO: Make changes here to help with your training...
         // END OF SPECIAL TRAINING CONDITIONS
+
+        // If pacman got stuck (not collecting anything anymore), kill it
+        int newScore = pacman.getMaze().getLevelManager().getScore();
+        if (newScore > lastScore) {
+            lastScore = newScore;
+            numberUpdatesSincelastscone = 0;
+        }
+
+        // 60 updates per seconds * 10 seconds
+        if (numberUpdatesSincelastscone++ > 60 * 10) {
+            pacman.kill();
+            return Direction.UP;
+        }
 
         // We are going to use these directions a lot for different inputs. Get them all once for clarity and brevity
         Direction forward = pacman.getDirection();
