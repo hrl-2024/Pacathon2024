@@ -414,6 +414,25 @@ public class Maze implements Disposable {
         entities.add(fruit);
     }
 
+    public boolean isFruitPresent() {
+        for (Entity entity : entities) {
+            if (entity instanceof FruitEntity) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Maze.java
+    public @Nullable Vector2i getFruitPosition() {
+        for (Entity entity : entities) {
+            if (entity instanceof FruitEntity) {
+                return entity.getTilePosition();
+            }
+        }
+        return null;
+    }
+
     public void update() {
         ticks++;
         if (freezeTicks > 0) {

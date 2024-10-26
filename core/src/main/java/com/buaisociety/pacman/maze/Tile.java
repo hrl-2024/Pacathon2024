@@ -96,6 +96,17 @@ public class Tile {
         return Objects.equals(maze, tile.maze) && Objects.equals(position, tile.position);
     }
 
+    public @NotNull Direction getDirectionTo(@NotNull Tile targetTile) {
+        int dx = targetTile.getPosition().x() - this.position.x;
+        int dy = targetTile.getPosition().y() - this.position.y;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            return dx > 0 ? Direction.RIGHT : Direction.LEFT;
+        } else {
+            return dy > 0 ? Direction.UP : Direction.DOWN;
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(maze, position);

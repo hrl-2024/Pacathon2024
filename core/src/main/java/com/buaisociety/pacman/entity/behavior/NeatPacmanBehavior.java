@@ -12,6 +12,7 @@ import com.buaisociety.pacman.entity.PacmanEntity;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 public class NeatPacmanBehavior implements Behavior {
 
@@ -91,6 +92,28 @@ public class NeatPacmanBehavior implements Behavior {
         boolean closestPalletIsRight = distanceToNearestPelletRight == minDistance;
         boolean closestPalletIsBehind = distanceToNearestPelletBehind == minDistance;
 
+        // Get the fruit position
+        Vector2i fruitPosition = pacman.getMaze().getFruitPosition();
+        if (fruitPosition != null) {
+            // Calculate direction to the fruit
+            Tile pacmanTile = pacman.getMaze().getTile(pacman.getTilePosition());
+            Tile fruitTile = pacman.getMaze().getTile(fruitPosition);
+            Direction directionToFruit = pacmanTile.getDirectionTo(fruitTile);
+
+            // Use the direction to the fruit in your NEAT algorithm inputs
+            boolean fruitIsForward = directionToFruit == pacman.getDirection();
+            boolean fruitIsLeft = directionToFruit == pacman.getDirection().left();
+            boolean fruitIsRight = directionToFruit == pacman.getDirection().right();
+            boolean fruitIsBehind = directionToFruit == pacman.getDirection().behind();
+        }
+
+        boolean ghostLeft = pacman.dfsCheckForGhost(left);
+        boolean ghostRight = pacman.dfsCheckForGhost(right);
+        boolean ghostForward = pacman.dfsCheckForGhost(forward);
+        boolean ghostBehind = pacman.dfsCheckForGhost(behind);
+
+        System.out.printf("%b %b %b %b \n", ghostLeft, ghostRight, ghostForward, ghostBehind);
+
         // Get the current score and number of pellets left
         int pelletsLeft = pacman.getMaze().getPelletsRemaining();
 
@@ -115,6 +138,10 @@ public class NeatPacmanBehavior implements Behavior {
             closestPalletIsLeft ? 1f : 0f,
             closestPalletIsRight ? 1f : 0f,
             closestPalletIsBehind ? 1f : 0f,
+            ghostLeft ? 1f : 0f,
+            ghostRight ? 1f : 0f,
+            ghostForward ? 1f : 0f,
+            ghostBehind ? 1f : 0f,
         }).join();
 
         //            closestPalletIsForward ? 1f : 0f,

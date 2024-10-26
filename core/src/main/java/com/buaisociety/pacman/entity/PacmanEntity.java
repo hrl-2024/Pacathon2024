@@ -59,6 +59,15 @@ public class PacmanEntity extends Entity {
         return pathFinder.getDistanceToNearestGhost(neighborTile);
     }
 
+    public boolean dfsCheckForGhost(Direction direction) {
+        Tile startTile = maze.getTile(getTilePosition());
+        Tile neighborTile = startTile.getNeighbor(direction);
+        if (!neighborTile.getState().isPassable()) {
+            return false;
+        }
+        return pathFinder.dfsCheckForGhost(startTile, neighborTile);
+    }
+
     @Override
     public void reset() {
         animationFrame = 0;

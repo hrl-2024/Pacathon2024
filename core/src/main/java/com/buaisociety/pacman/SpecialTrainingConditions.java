@@ -29,14 +29,14 @@ public final class SpecialTrainingConditions {
     public static @NotNull EventListener<EntityPreSpawnEvent> onEntityPreSpawn() {
         return event -> {
             // Only 1 ghost
-//            if (event.getEntityType() == EntityType.GHOST && event.getMaze().getEntities().stream().anyMatch(e -> e.getType() == EntityType.GHOST)) {
-//                event.setCancelled(true);
-//            }
-
-            // Prevent all ghosts from spawning during training
-            if (event.getEntityType() == EntityType.GHOST) {
+            if (event.getEntityType() == EntityType.GHOST && event.getMaze().getEntities().stream().anyMatch(e -> e.getType() == EntityType.GHOST)) {
                 event.setCancelled(true);
             }
+
+//            // Prevent all ghosts from spawning during training
+//            if (event.getEntityType() == EntityType.GHOST) {
+//                event.setCancelled(true);
+//            }
         };
     }
 
