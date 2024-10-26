@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.buaisociety.pacman.entity.behavior.AggressiveChaseBehavior;
 import com.buaisociety.pacman.entity.behavior.Behavior;
-import com.buaisociety.pacman.maze.Maze;
-import com.buaisociety.pacman.maze.Tile;
-import com.buaisociety.pacman.maze.TileState;
+import com.buaisociety.pacman.maze.*;
 import com.buaisociety.pacman.sprite.GrayscaleSpriteSheet;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
@@ -23,6 +21,9 @@ public class PacmanEntity extends Entity {
     private int freezeTicks;
     private boolean isAlive = true;
 
+    private final MazeGraph graph;
+    private final ShortestPathFinder pathFinder;
+
     public PacmanEntity(@NotNull Maze maze, @NotNull Config config) {
         super(maze, EntityType.PACMAN);
 
@@ -33,6 +34,18 @@ public class PacmanEntity extends Entity {
         // This sprite sheet is 3x4 tiled sprite sheet, each tile is 20x20 pixels
         this.spriteSheet = config.spriteSheet;
         this.spriteSheet.setColors(Color.CLEAR, Color.YELLOW);
+
+        this.graph = new MazeGraph(maze);
+        this.pathFinder = new ShortestPathFinder(graph);
+    }
+
+    public float getDistanceToNearestPellet(Direction direction) {
+        Tile startTile = maze.getTile(getTilePosition());
+        Tile neighborTile = startTile.getNeighbor(direction);
+        if (!neighborTile.getState().isPassable()) {
+            return Float.MAX_VALUE;
+        }
+        return pathFinder.getDistanceToNearestPellet(neighborTile);
     }
 
     @Override

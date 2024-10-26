@@ -3,6 +3,7 @@ package com.buaisociety.pacman.entity.behavior;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.buaisociety.pacman.maze.Maze;
+import com.buaisociety.pacman.maze.Tile;
 import com.buaisociety.pacman.sprite.DebugDrawing;
 import com.cjcrafter.neat.Client;
 import com.buaisociety.pacman.entity.Direction;
@@ -70,11 +71,20 @@ public class NeatPacmanBehavior implements Behavior {
         boolean canMoveRight = pacman.canMove(right);
         boolean canMoveBehind = pacman.canMove(behind);
 
+        float distanceToNearestPelletForward = pacman.getDistanceToNearestPellet(forward);
+        float distanceToNearestPelletLeft = pacman.getDistanceToNearestPellet(left);
+        float distanceToNearestPelletRight = pacman.getDistanceToNearestPellet(right);
+        float distanceToNearestPelletBehind = pacman.getDistanceToNearestPellet(behind);
+
         float[] outputs = client.getCalculator().calculate(new float[]{
             canMoveForward ? 1f : 0f,
             canMoveLeft ? 1f : 0f,
             canMoveRight ? 1f : 0f,
             canMoveBehind ? 1f : 0f,
+            distanceToNearestPelletForward,
+            distanceToNearestPelletLeft,
+            distanceToNearestPelletRight,
+            distanceToNearestPelletBehind,
         }).join();
 
         int index = 0;
