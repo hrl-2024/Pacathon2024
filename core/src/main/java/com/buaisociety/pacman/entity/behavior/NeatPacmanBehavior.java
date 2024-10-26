@@ -112,8 +112,6 @@ public class NeatPacmanBehavior implements Behavior {
         boolean ghostForward = pacman.dfsCheckForGhost(forward);
         boolean ghostBehind = pacman.dfsCheckForGhost(behind);
 
-        System.out.printf("%b %b %b %b \n", ghostLeft, ghostRight, ghostForward, ghostBehind);
-
         // Get the current score and number of pellets left
         int pelletsLeft = pacman.getMaze().getPelletsRemaining();
 

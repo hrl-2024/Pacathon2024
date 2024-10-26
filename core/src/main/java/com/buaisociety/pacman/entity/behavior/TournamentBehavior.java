@@ -77,6 +77,11 @@ public class TournamentBehavior implements Behavior {
         boolean closestPalletIsRight = distanceToNearestPelletRight == minDistance;
         boolean closestPalletIsBehind = distanceToNearestPelletBehind == minDistance;
 
+        boolean ghostLeft = pacman.dfsCheckForGhost(left);
+        boolean ghostRight = pacman.dfsCheckForGhost(right);
+        boolean ghostForward = pacman.dfsCheckForGhost(forward);
+        boolean ghostBehind = pacman.dfsCheckForGhost(behind);
+
         float[] inputs = new float[] {
             // TODO: Add your inputs here
             canMoveForward ? 1f : 0f,
@@ -87,6 +92,10 @@ public class TournamentBehavior implements Behavior {
             closestPalletIsLeft ? 1f : 0f,
             closestPalletIsRight ? 1f : 0f,
             closestPalletIsBehind ? 1f : 0f,
+            ghostLeft ? 1f : 0f,
+            ghostRight ? 1f : 0f,
+            ghostForward ? 1f : 0f,
+            ghostBehind ? 1f : 0f,
         };
         float[] outputs = calculator.calculate(inputs).join();
 
