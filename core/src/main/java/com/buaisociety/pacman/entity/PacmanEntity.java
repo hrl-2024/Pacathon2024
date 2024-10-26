@@ -21,6 +21,7 @@ public class PacmanEntity extends Entity {
     private int freezeTicks;
     private boolean isAlive = true;
 
+    // For graph traversal: the maze graph and the shortest pathfinder
     private final MazeGraph graph;
     private final ShortestPathFinder pathFinder;
 
@@ -39,13 +40,22 @@ public class PacmanEntity extends Entity {
         this.pathFinder = new ShortestPathFinder(graph);
     }
 
-    public float getDistanceToNearestPellet(Direction direction) {
+    public int getDistanceToNearestPellet(Direction direction) {
         Tile startTile = maze.getTile(getTilePosition());
         Tile neighborTile = startTile.getNeighbor(direction);
         if (!neighborTile.getState().isPassable()) {
-            return Float.MAX_VALUE;
+            return Integer.MAX_VALUE;
         }
         return pathFinder.getDistanceToNearestPellet(neighborTile);
+    }
+
+    public int getDistanceToNearestGhost(Direction direction) {
+        Tile startTile = maze.getTile(getTilePosition());
+        Tile neighborTile = startTile.getNeighbor(direction);
+        if (!neighborTile.getState().isPassable()) {
+            return Integer.MAX_VALUE;
+        }
+        return pathFinder.getDistanceToNearestGhost(neighborTile);
     }
 
     @Override

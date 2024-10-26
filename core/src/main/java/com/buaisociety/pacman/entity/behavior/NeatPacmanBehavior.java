@@ -71,10 +71,21 @@ public class NeatPacmanBehavior implements Behavior {
         boolean canMoveRight = pacman.canMove(right);
         boolean canMoveBehind = pacman.canMove(behind);
 
-        float distanceToNearestPelletForward = pacman.getDistanceToNearestPellet(forward);
-        float distanceToNearestPelletLeft = pacman.getDistanceToNearestPellet(left);
-        float distanceToNearestPelletRight = pacman.getDistanceToNearestPellet(right);
-        float distanceToNearestPelletBehind = pacman.getDistanceToNearestPellet(behind);
+        // Nearest distance to Pallet:
+        int distanceToNearestPelletForward = pacman.getDistanceToNearestPellet(forward);
+        int distanceToNearestPelletLeft = pacman.getDistanceToNearestPellet(left);
+        int distanceToNearestPelletRight = pacman.getDistanceToNearestPellet(right);
+        int distanceToNearestPelletBehind = pacman.getDistanceToNearestPellet(behind);
+
+        // Nearest distance to ghost:
+        int distanceToGhostForward = pacman.getDistanceToNearestGhost(forward);
+        int distanceToGhostLeft = pacman.getDistanceToNearestGhost(left);
+        int distanceToGhostRight = pacman.getDistanceToNearestGhost(right);
+        int distanceToGhostBehind = pacman.getDistanceToNearestGhost(behind);
+
+        // Get the current score and number of pellets left
+        int currentScore = pacman.getMaze().getLevelManager().getScore();
+        int pelletsLeft = pacman.getMaze().getPelletsRemaining();
 
         float[] outputs = client.getCalculator().calculate(new float[]{
             canMoveForward ? 1f : 0f,
@@ -85,6 +96,12 @@ public class NeatPacmanBehavior implements Behavior {
             distanceToNearestPelletLeft,
             distanceToNearestPelletRight,
             distanceToNearestPelletBehind,
+            distanceToGhostForward,
+            distanceToGhostLeft,
+            distanceToGhostRight,
+            distanceToGhostBehind,
+            currentScore,
+            pelletsLeft,
         }).join();
 
         int index = 0;
