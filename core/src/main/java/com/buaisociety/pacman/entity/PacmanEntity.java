@@ -7,6 +7,7 @@ import com.buaisociety.pacman.entity.behavior.AggressiveChaseBehavior;
 import com.buaisociety.pacman.entity.behavior.Behavior;
 import com.buaisociety.pacman.maze.*;
 import com.buaisociety.pacman.sprite.GrayscaleSpriteSheet;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
@@ -37,16 +38,16 @@ public class PacmanEntity extends Entity {
         this.spriteSheet.setColors(Color.CLEAR, Color.YELLOW);
 
         this.graph = new MazeGraph(maze);
-        this.pathFinder = new ShortestPathFinder(graph);
+        this.pathFinder = new ShortestPathFinder(graph, 2);
     }
 
-    public int getDistanceToNearestPellet(Direction direction) {
+    public float getDistanceToNearestPellet(Direction direction) {
         Tile startTile = maze.getTile(getTilePosition());
         Tile neighborTile = startTile.getNeighbor(direction);
         if (!neighborTile.getState().isPassable()) {
             return Integer.MAX_VALUE;
         }
-        return pathFinder.getDistanceToNearestPellet(neighborTile);
+        return pathFinder.getNormalizedScoreToNearestPellet(neighborTile);
     }
 
     public int getDistanceToNearestGhost(Direction direction) {
@@ -56,6 +57,15 @@ public class PacmanEntity extends Entity {
             return Integer.MAX_VALUE;
         }
         return pathFinder.getDistanceToNearestGhost(neighborTile);
+    }
+
+    public Pair<Integer, Direction> getDistanceAndDirectionToNearestPelletAndGhost() {
+        Tile startTile = maze.getTile(getTilePosition());
+        return pathFinder.getDistanceAndDirectionToNearestPowerPellet(startTile);
+    }
+
+    public boolean isInSuperMode() {
+        return maze.getFrightenedTimer() > 0;
     }
 
     @Override

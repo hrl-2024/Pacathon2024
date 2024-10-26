@@ -9,6 +9,7 @@ import com.cjcrafter.neat.Client;
 import com.buaisociety.pacman.entity.Direction;
 import com.buaisociety.pacman.entity.Entity;
 import com.buaisociety.pacman.entity.PacmanEntity;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +55,7 @@ public class NeatPacmanBehavior implements Behavior {
         }
 
         // 60 updates per seconds * 10 seconds
-        if (numberUpdatesSincelastscone++ > 60 * 10) {
+        if (numberUpdatesSincelastscone++ > 60 * 40) {
             pacman.kill();
             return Direction.UP;
         }
@@ -72,10 +73,10 @@ public class NeatPacmanBehavior implements Behavior {
         boolean canMoveBehind = pacman.canMove(behind);
 
         // Nearest distance to Pallet:
-        int distanceToNearestPelletForward = pacman.getDistanceToNearestPellet(forward);
-        int distanceToNearestPelletLeft = pacman.getDistanceToNearestPellet(left);
-        int distanceToNearestPelletRight = pacman.getDistanceToNearestPellet(right);
-        int distanceToNearestPelletBehind = pacman.getDistanceToNearestPellet(behind);
+        float distanceToNearestPelletForward = pacman.getDistanceToNearestPellet(forward);
+        float distanceToNearestPelletLeft = pacman.getDistanceToNearestPellet(left);
+        float distanceToNearestPelletRight = pacman.getDistanceToNearestPellet(right);
+        float distanceToNearestPelletBehind = pacman.getDistanceToNearestPellet(behind);
 
         // Nearest distance to ghost:
         int distanceToGhostForward = pacman.getDistanceToNearestGhost(forward);
@@ -86,6 +87,19 @@ public class NeatPacmanBehavior implements Behavior {
         // Get the current score and number of pellets left
         int currentScore = pacman.getMaze().getLevelManager().getScore();
         int pelletsLeft = pacman.getMaze().getPelletsRemaining();
+
+        // Check if Pacman should eat a PowerPellet
+        boolean shouldEatPowerPellet = (distanceToGhostForward < 5 || distanceToGhostLeft < 5 || distanceToGhostRight < 5 || distanceToGhostBehind < 5);
+
+        // Get closest power pellet direction and distance
+        Pair<Integer, Direction> closestPowerPellet = pacman.getDistanceAndDirectionToNearestPelletAndGhost();
+        int distanceToClosestPowerPellet = closestPowerPellet.getFirst();
+        Direction directionToClosestPowerPellet = closestPowerPellet.getSecond();
+        boolean closestPowerPelletIsForward = directionToClosestPowerPellet == forward;
+        boolean closestPowerPelletIsLeft = directionToClosestPowerPellet == left;
+        boolean closestPowerPelletIsRight = directionToClosestPowerPellet == right;
+        boolean closestPowerPelletIsBehind = directionToClosestPowerPellet == behind;
+        boolean isInSuperMode = pacman.isInSuperMode();
 
         float[] outputs = client.getCalculator().calculate(new float[]{
             canMoveForward ? 1f : 0f,
@@ -103,6 +117,14 @@ public class NeatPacmanBehavior implements Behavior {
             currentScore,
             pelletsLeft,
         }).join();
+
+        //            shouldEatPowerPellet ? 1f : 0f,
+        //            distanceToClosestPowerPellet,
+        //            closestPowerPelletIsForward ? 1f : 0f,
+        //            closestPowerPelletIsLeft ? 1f : 0f,
+        //            closestPowerPelletIsRight ? 1f : 0f,
+        //            closestPowerPelletIsBehind ? 1f : 0f,
+        //            isInSuperMode ? 1f : 0f,
 
         int index = 0;
         float max = outputs[0];
